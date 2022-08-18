@@ -1,0 +1,33 @@
+CREATE DATABASE Actividad1_1
+GO
+
+USE Actividad1_1
+GO
+
+CREATE TABLE Carreras(
+	ID VARCHAR(4) NOT NULL PRIMARY KEY,
+	Nombre VARCHAR(50) NOT NULL,
+	Fecha_Creacion DATE NOT NULL CHECK ( Fecha_Creacion < GETDATE() ),
+	Mail VARCHAR(50) NOT NULL UNIQUE,
+	Nivel VARCHAR(20) NOT NULL CHECK ( Nivel = 'Diplomatura' OR Nivel = 'Pregrado' OR Nivel = 'Grado' OR Nivel = 'Posgrado' )
+)
+GO
+
+CREATE TABLE Materias (
+	ID INT NOT NULL PRIMARY KEY IDENTITY (1,1),
+	IDCarrera VARCHAR(4) NOT NULL FOREIGN KEY REFERENCES Carreras ( ID ),
+	Nombre VARCHAR(30) NOT NULL,
+	Carga_Horaria SMALLINT NOT NULL CHECK ( Carga_Horaria > 0 )
+)
+GO
+
+CREATE TABLE Alumnos (
+	Legajo INT NOT NULL PRIMARY KEY IDENTITY ( 1000,1 ),
+	IDCarrera VARCHAR(4) NOT NULL FOREIGN KEY REFERENCES Carreras ( ID ),
+	Apellido VARCHAR(50) NOT NULL,
+	Nombres VARCHAR(50) NOT NULL,
+	Fecha_Nac DATE NOT NULL CHECK ( Fecha_Nac < GETDATE() ),
+	Mail VARCHAR(50) NOT NULL UNIQUE,
+	Telefono VARCHAR(30) NULL
+)
+GO
