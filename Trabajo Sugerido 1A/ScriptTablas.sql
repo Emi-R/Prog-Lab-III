@@ -88,3 +88,4 @@ CREATE TABLE ArticulosPorCompras (
 	Cantidad INT NOT NULL CHECK ( Cantidad > 0 ),
 	PRIMARY KEY (NumVenta, CodArticulo)
 )
+GO
