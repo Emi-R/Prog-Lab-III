@@ -1,0 +1,23 @@
+CREATE DATABASE RELACION1A1
+GO					 
+					 
+USE RELACION1A1		 
+GO					 
+					 
+CREATE TABLE Personas (
+	IDPersona BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	Dni BIGINT NOT NULL CHECK ( Dni > 0 ),
+	Apellido VARCHAR(50) NOT NULL,
+	Nombre VARCHAR(50) NOT NULL,
+	Genero CHAR(1) NULL CHECK ( Genero = 'F' OR Genero = 'M' ),
+	IDNacionalidad SMALLINT NOT NULL CHECK ( IDNacionalidad > 1 )
+)
+GO
+
+CREATE TABLE Pasaporte (
+	IDPasaporte BIGINT NOT NULL UNIQUE, 
+	NumeroPasaporte VARCHAR(50) NOT NULL,
+	IDPersona BIGINT NOT NULL FOREIGN KEY REFERENCES Personas(IDPersona) PRIMARY KEY,
+	CodigoPais CHAR(3) NOT NULL,
+)
+GO
