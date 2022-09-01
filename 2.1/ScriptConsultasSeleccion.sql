@@ -108,10 +108,15 @@ Select
 From Clientes
 Go
 
--- Todos los datos de los clientes que hayan nacido luego del año 2000
+-- Todos los datos de los colaboradores que hayan nacido luego del año 2000
+Select * From Colaboradores
+Where Year(FechaNacimiento) > 2000
+Go
 
---Select * From Clientes
---Where 
+-- Todos los datos de los colaboradores que hayan nacido entre los meses de Enero y Julio (inclusive)
+Select * From Colaboradores
+Where Month(FechaNacimiento) Between 1 And 6
+Go
 
 -- Todos los datos de los clientes cuyo apellido finalice con vocal
 Select * From Clientes
