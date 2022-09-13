@@ -82,8 +82,19 @@ Go
 
 -- Listar por cada cliente el apellido y nombres y los nombres de las categorías de aquellos productos de los cuales hayan realizado pedidos. No deben figurar registros duplicados.
 
-Select * From 
+Select Distinct C.Apellidos, C.Nombres, Cat.Nombre From Clientes C
+Inner Join Pedidos P On C.ID = P.IDCliente
+Inner Join Productos Pr On P.IDProducto = Pr.ID
+Inner Join Categorias Cat On Pr.IDCategoria = Cat.ID
 
-Select * From Pedidos
+-- Listar apellidos y nombres de aquellos clientes que hayan realizado algún pedido cuya cantidad sea exactamente igual a la cantidad considerada mayorista del producto.
 
+Select Distinct C.Apellidos, C.Nombres From Clientes C
+Inner Join Pedidos P On P.IDCliente = C.ID
+Inner Join Productos Pr On Pr.ID = P.IDProducto
+Where P.Cantidad = Pr.CantidadMayorista
 
+-- Listar por cada producto el nombre del producto, el nombre de la categoría, el precio de venta minorista, el precio de venta mayorista y el porcentaje de ahorro que se obtiene por la compra mayorista a valor mayorista en relación al valor minorista.
+
+Select P.Descripcion, C.Nombre, P.Precio, P.PrecioVentaMayorista, (P.Precio - P.PrecioVentaMayorista) * 100 / P.Precio as 'Porcentaje de Ahorro' From Productos P
+Inner Join Categorias C On C.ID = P.IDCategoria
