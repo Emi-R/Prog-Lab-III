@@ -31,10 +31,111 @@ Select
 From Materiales_x_Producto 
 Group By IDMaterial
 
+-- Para cada producto, listar el nombre y la cantidad de pedidos pagados.
+Select
+    P.ID,
+    P.Descripcion As Nombre,
+    Count(*) as 'Cantidad Pagados'
+From Productos P Inner Join Pedidos Ped On P.ID = Ped.IDProducto
+Where Ped.Pagado = 1
+Group By P.ID, P.Descripcion
 
+-- Por cada cliente, listar apellidos y nombres de los clientes y la cantidad de productos distintos que haya pedido.
+Select
+    C.Apellidos,
+    C.Nombres,
+    Count(distinct P.IDProducto) As Cant
+From Clientes C 
+Inner Join Pedidos P On P.IDCliente = C.ID
+Group by C.Apellidos, C.Nombres
+
+-- Por cada colaborador y tarea que haya realizado, listar apellidos y nombres, nombre de la tarea y la cantidad de veces que haya realizado esa tarea.
+Select
+    C.Apellidos,
+    C.Nombres,
+    T.Nombre,
+    Count(Ta.IDTarea) as Cantidad
+From Colaboradores C 
+Inner Join Tareas_x_Pedido Ta On C.Legajo = Ta.Legajo
+Inner Join Tareas T On Ta.IDTarea = T.ID
+Group by C.Apellidos, C.Nombres, T.Nombre
+
+-- Por cada cliente, listar los apellidos y nombres y el importe individual más caro que hayan abonado en concepto de pago.
+Select
+    C.ID,
+    C.Apellidos,
+    C.Nombres,
+    Max(Pa.Importe) as 'Pago Maximo'
+From Clientes C
+Inner Join Pedidos P On C.ID = P.IDCliente
+Inner Join Pagos Pa On P.IDCliente = Pa.ID
+Group by C.ID, C.Apellidos, C.Nombres
+
+-- Por cada colaborador, apellidos y nombres y la menor cantidad de unidades solicitadas en un pedido individual en el que haya trabajado.
+Select
+    C.Legajo,
+    C.Apellidos,
+    C.Nombres,
+    Min(P.Cantidad)
+From Colaboradores C
+Inner Join Tareas_x_Pedido T On C.Legajo = T.Legajo
+Inner Join Pedidos P On T.IDPedido = P.ID
+Group By C.Legajo, C.Apellidos, C.Nombres
+
+-- Listar apellidos y nombres de aquellos clientes que no hayan realizado ningún pedido. Es decir, que contabilicen 0 pedidos.
+Select 
+    C.Apellidos,
+    C.Nombres,
+    Count(P.Id) as Pedidos
+From Clientes C
+Left Join Pedidos P On C.ID = P.ID
+Group By C.Apellidos, C.Nombres
+Having Count(P.Id) = 0
+
+-- Obtener un listado de productos indicando descripción y precio de aquellos productos que hayan registrado más de 15 pedidos.
+Select
+    P.Descripcion,
+    P.Precio,
+    Count(Pe.IDProducto)
+From Productos P
+Inner Join Pedidos Pe On P.ID = Pe.IDProducto
+Group By Pe.IDProducto, P.Descripcion, P.Precio
+Having Count(Pe.IDProducto) > 15
+
+-- Obtener un listado de productos indicando descripción y nombre de categoría de los productos que tienen un precio promedio de pedidos mayor a $25000.
+Select
+    P.ID,
+    P.Descripcion,
+    C.Nombre,
+    Avg(Pe.Costo) As Promedio
+From Productos P
+Inner Join Pedidos Pe on P.ID = Pe.IDProducto
+Inner Join Categorias C On P.IDCategoria = C.ID
+Group By P.ID, P.Descripcion, C.Nombre
+Having Avg(Pe.Costo) > 25000
+
+-- Apellidos y nombres de los clientes que hayan registrado más de 15 pedidos que superen los $15000.
+Select 
+    *
+From Clientes C 
+Inner Join Pedidos P On C.ID = P.IDCliente
+
+
+
+Select C.Legajo, C.Apellidos, T.IDTarea From Colaboradores C
+Inner Join Tareas_x_Pedido T On C.Legajo = T.Legajo
+Order by C.Legajo asc
+
+Select * From Clientes
+
+Select * From Pagos
+
+Select * From Pedidos
 
 Select * From Materiales_x_Producto
 
 Select * From Productos
 
-Select * from Pedidos
+
+Select * from Colaboradores
+Select * From Tareas
