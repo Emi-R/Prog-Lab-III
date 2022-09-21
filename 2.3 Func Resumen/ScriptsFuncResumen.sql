@@ -115,27 +115,30 @@ Group By P.ID, P.Descripcion, C.Nombre
 Having Avg(Pe.Costo) > 25000
 
 -- Apellidos y nombres de los clientes que hayan registrado más de 15 pedidos que superen los $15000.
-Select 
-    *
+Select
+    C.Apellidos,
+    C.Nombres,
+    Count(P.Costo) As Pedidos
 From Clientes C 
 Inner Join Pedidos P On C.ID = P.IDCliente
+Where P.Costo > 15000
+Group by C.Nombres, C.Apellidos
+Having Count(P.Costo) > 15
 
-
-
-Select C.Legajo, C.Apellidos, T.IDTarea From Colaboradores C
-Inner Join Tareas_x_Pedido T On C.Legajo = T.Legajo
-Order by C.Legajo asc
-
-Select * From Clientes
-
-Select * From Pagos
-
-Select * From Pedidos
-
-Select * From Materiales_x_Producto
-
-Select * From Productos
-
-
-Select * from Colaboradores
-Select * From Tareas
+-- Para cada producto, listar el nombre, el texto 'Pagados'  y la cantidad de pedidos pagados. Anexar otro listado con nombre, el texto 'No pagados' y cantidad de pedidos no pagados.
+Select 
+    Pr.ID,
+    Pr.Descripcion,
+    Count(P.Pagado) As Pagados
+From Pedidos P 
+Inner Join Productos Pr On P.IDProducto = PR.ID
+Where P.Pagado = 1
+Group By Pr.ID, Pr.Descripcion
+Select 
+    Pr.ID,
+    Pr.Descripcion,
+    Count(P.Pagado) As 'NoPagados'
+From Pedidos P 
+Inner Join Productos Pr On P.IDProducto = PR.ID
+Where P.Pagado = 0
+Group By Pr.ID, Pr.Descripcion
