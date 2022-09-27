@@ -1,7 +1,7 @@
 -- Los pedidos que hayan sido finalizados en menor cantidad de días que la demora promedio
 Select * From Pedidos P
-Where Datediff(Day, P.FechaFinalizacion, P.FechaSolicitud) < (
-    Select Avg(Datediff(Day, P.FechaFinalizacion, P.FechaSolicitud)) 
+Where Datediff(Day, P.FechaSolicitud, P.FechaFinalizacion) < (
+    Select Avg(Datediff(Day, P.FechaSolicitud, P.FechaFinalizacion)) 
     From Pedidos P
     )
 
