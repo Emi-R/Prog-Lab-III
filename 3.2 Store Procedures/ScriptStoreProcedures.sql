@@ -58,7 +58,7 @@ Begin
     End
 
     Insert into Tarjetas Values (@DNI, 1, Getdate(), @Saldo, 1)
-    
+
 End 
 
 -- Realizar un procedimiento almacenado llamado sp_Agregar_Viaje que registre un viaje a una tarjeta en particular. 
@@ -90,8 +90,61 @@ Begin
     Else 
         Begin 
             Update Tarjetas Set Saldo = Saldo - @Importe
-            Insert Viajes Values (Getdate(), @NumInterno, @NumLineaColectivo, @NumTarjeta, @Importe)
-            Insert Movimientos Values (Getdate(), @NumTarjeta, @Importe, 'D')
+            Insert into Viajes Values (Getdate(), @NumInterno, @NumLineaColectivo, @NumTarjeta, @Importe)
+            Insert into Movimientos Values (Getdate(), @NumTarjeta, @Importe, 'D')
         End
 End
 
+--  Realizar un procedimiento almacenado llamado sp_Agregar_Saldo que registre un movimiento de crédito a una tarjeta en particular. 
+-- El procedimiento debe recibir: El número de tarjeta y el importe a recargar. Modificar el saldo de la tarjeta.
+
+-- Create Procedure SP_Agregar_Saldo (
+
+--     @NumTarjeta bigint,
+--     @Importe money
+-- )
+-- as 
+-- Begin 
+--     Insert into Movimientos Values (Getdate(), @NumTarjeta, @Importe, 'C')
+--     Update Tarjetas Set Saldo = Saldo + @Importe
+-- End
+
+-- E) Realizar un procedimiento almacenado llamado sp_Baja_Fisica_Usuario que elimine un usuario del sistema. 
+-- La eliminación deberá ser 'en cascada'. Esto quiere decir que para cada usuario primero deberán eliminarse todos los viajes y recargas de sus respectivas tarjetas. 
+-- Luego, todas sus tarjetas y por último su registro de usuario.
+
+Create Procedure sp_Baja_Fisica_Usuario (
+    @DNI bigint
+)
+as
+Begin
+
+    Declare @ExisteUsuario bit
+    Set @ExisteUsuario = (Select Count(*) From Usuarios Where @DNI = Usuarios.DNI)
+
+    If @ExisteUsuario = 0
+        Begin
+            Print 'El usuario no existe'
+        End
+    Else
+        Begin
+
+            Declare @CantidadTarjetas int
+            Set @CantidadTarjetas = (Select Count(*) from Tarjetas Where Tarjetas.DNIUsuario = @DNI)
+            
+            While(@CantidadTarjetas > 0)
+                Begin
+                    Declare @IDTarjetaActual int
+                    Set @IDTarjetaActual = (Select Top 1 Tarjetas.ID From Tarjetas Where Tarjetas.DNIUsuario = @DNI Order By Tarjetas.FechaAlta desc)
+
+                    Delete From Viajes Where Viajes.NumSUBE = @IDTarjetaActual
+                    Delete From Movimientos WHERE Movimientos.NumSUBE = @IDTarjetaActual
+                    Delete From Tarjetas Where Tarjetas.ID = @IDTarjetaActual
+
+                    Set @CantidadTarjetas = @CantidadTarjetas - 1
+
+                End
+
+                Delete From Usuarios Where Usuarios.DNI = @DNI
+        End
+End
