@@ -98,16 +98,16 @@ End
 --  Realizar un procedimiento almacenado llamado sp_Agregar_Saldo que registre un movimiento de crédito a una tarjeta en particular. 
 -- El procedimiento debe recibir: El número de tarjeta y el importe a recargar. Modificar el saldo de la tarjeta.
 
--- Create Procedure SP_Agregar_Saldo (
+Create Procedure SP_Agregar_Saldo (
 
---     @NumTarjeta bigint,
---     @Importe money
--- )
--- as 
--- Begin 
---     Insert into Movimientos Values (Getdate(), @NumTarjeta, @Importe, 'C')
---     Update Tarjetas Set Saldo = Saldo + @Importe
--- End
+    @NumTarjeta bigint,
+    @Importe money
+)
+as 
+Begin 
+    Insert into Movimientos Values (Getdate(), @NumTarjeta, @Importe, 'C')
+    Update Tarjetas Set Saldo = Saldo + @Importe
+End
 
 -- E) Realizar un procedimiento almacenado llamado sp_Baja_Fisica_Usuario que elimine un usuario del sistema. 
 -- La eliminación deberá ser 'en cascada'. Esto quiere decir que para cada usuario primero deberán eliminarse todos los viajes y recargas de sus respectivas tarjetas. 
